@@ -39,29 +39,57 @@ local function gitdl_folder(git_path, local_path)
     end
 
     for index, file in ipairs(available_files) do
-        webdl(file.url, local_path .. "/" .. file.name)
+        webdl(file.url, fs.combine(local_path, file.name))
     end
+end
+
+local function removeExtension(str)
+    return str:gsub("%.lua", "")
 end
 
 -- acquire library files
 gitdl_folder(cfg.remote_paths.lib, "/lib")
-local loader = require("lib.loader")
+local fileToTable = require("lib.fileToTable")
 
 -- declare variables
 local running = true
+local env = {}
+local shells = {}
 
 -- main loop
 while running do
-    loader.render(5, "-Booting BrandyOS v" .. cfg.version .. "-")
+    print("Welcome to BrandyOS v" .. cfg.version .. "!\r")
 
-    -- check enabled programs
-    if fs.exists("/disk/.programs-enabled.txt") then
-        local file = fs.open("/disk/.programs-enabled.txt", "r")
-        cfg.programs_enabled = file.readAll()
+    print("Checking for a list of services to enable...\r")
+    local services_enabled_file = nil
+    if fs.exists("/disk/.services-enabled") then
+        services_enabled_file = "/disk/.services-enabled"
+    elseif fs.exists(".services-enabled") then
+        services_enabled_file = ".services-enabled"
+    else
+        print("No enabled services found. Initialising core...")
+    end
+    if services_enabled_file then
+        local file = fs.open(services_enabled_file, "r")
+        local services_enabled_string = file.readAll()
+        file = fs.open(".services-enabled", "w")
+        file.write(services_enabled_string)
         file.close()
 
-        print(cfg.programs_enabled)
-    else
-        print("files enabled not found")
+        cfg.services_enabled = fileToTable(".services-enabled")
+
+        print("List discovered. Attempting to download services...")
+        if not fs.exists("/services") then
+            fs.makeDir("/services")
+        end
+        for index, service in ipairs(cfg.services_enabled) do
+            webdl(cfg.remote_paths.services .. "/" .. service .. ".lua",
+                fs.combine("services", service .. ".service"))
+        end
+        for index, service in ipairs(cfg.services_enabled) do
+            shells[service] = multishell.launch(env, fs.combine("services", service .. ".service"))
+        end
     end
+
+    running = false
 end
