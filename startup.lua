@@ -20,6 +20,7 @@ local function removeExtension(str)
     return str:match("%.(.+)$")
 end
 
+-- download raw http/s response from web
 local function webdl(url, localFile)
     local content = http.get(url).readAll()
     if not content then
@@ -38,7 +39,7 @@ local function gitdl_folder(git_path, local_path, requested_files)
 
     local git_connection = nil
 
-    -- grab auth token from local file
+    -- grab auth token from local file / warn for unauthed access
     if fs.exists(".github") then
         local gh_token = fs.open(".github", "r").readLine()
         local headers = {}
@@ -51,16 +52,22 @@ local function gitdl_folder(git_path, local_path, requested_files)
         git_connection = http.get(git_path)
     end
 
-    assert(git_connection, "Failed to connect to the remote repo at: " .. git_path)
+    -- throw error if access is denied
+    assert(git_connection,
+    "Failed to connect to the remote repo at: " ..
+        git_path .. "\nThis is most likely due to ratelimiting or failed auth.")
     local git_file_string = git_connection.readAll()
-    local remote_files = textutils.unserialiseJSON(git_file_string)
+    local git_files = textutils.unserialiseJSON(git_file_string)
+
+    -- add files to download target list, ignoring entries not contained in the requested list if provided
     local available_files = {}
-    for index, file in ipairs(remote_files) do
+    for index, file in ipairs(git_files) do
         if file['type'] == 'file' and ends_with(file['name'], '.lua') and (not requested_files or tableContains(requested_files, file["name"])) then
             table.insert(available_files, { name = file['name'], url = file['download_url'] })
         end
     end
 
+    -- download targeted files
     for index, file in ipairs(available_files) do
         webdl(file.url, fs.combine(local_path, file.name))
     end
@@ -78,6 +85,7 @@ local shells = {}
 while running do
     print("Welcome to BrandyOS v" .. cfg.version .. "!\r")
 
+    -- scan for existing service request list
     print("Checking for a list of services to enable...\r")
     local services_enabled_file = nil
     if fs.exists("/disk/.services-enabled") then
@@ -87,6 +95,8 @@ while running do
     else
         print("No enabled services found. Initialising core...")
     end
+
+    -- init services if requested, core service if not
     if services_enabled_file then
         local file = fs.open(services_enabled_file, "r")
         local services_enabled_string = file.readAll()
@@ -106,6 +116,8 @@ while running do
             shells[service_friendlyname] = shell.openTab(fs.combine("/services", service))
             sleep(1)
         end
+    else
+        print("core stuff here")
     end
 
     running = false
