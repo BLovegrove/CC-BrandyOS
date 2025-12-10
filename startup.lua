@@ -83,7 +83,7 @@ while running do
             fs.makeDir("/services")
         end
         for index, service in ipairs(cfg.services_enabled) do
-            webdl(cfg.remote_paths.services .. "/" .. service .. ".lua",
+            webdl(cfg.remote_paths.services .. service .. ".lua",
                 fs.combine("services", service .. ".service"))
         end
         for index, service in ipairs(cfg.services_enabled) do
