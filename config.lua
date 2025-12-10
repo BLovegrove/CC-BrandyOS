@@ -1,9 +1,8 @@
 local cfg = {
     version = "0.0.1",
     remote_paths = {
-        base = "https://raw.github.com/blovegrove/cc-BrandyOS/main/",
-        startup = "startup.lua",
-        config = "config.cfg"
+        base = "https://api.github.com/repos/blovegrove/cc-brandyos/contents/",
+        lib = "https://api.github.com/repos/blovegrove/cc-brandyos/contents/library/",
     }
 }
 
