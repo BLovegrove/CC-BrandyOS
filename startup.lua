@@ -89,6 +89,8 @@ while running do
         for index, service in ipairs(cfg.services_enabled) do
             shells[service] = multishell.launch(env, fs.combine("services", service .. ".service"))
         end
+
+        print(shells)
     end
 
     running = false
