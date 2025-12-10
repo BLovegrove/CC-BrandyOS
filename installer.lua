@@ -19,3 +19,5 @@ webdl(REPO_ROOT .. "config.lua", "config.lua")
 
 print("Done! Booting into BrandyOS in 5 seconds...")
 sleep(5)
+
+shell.run("startup")
