@@ -27,10 +27,9 @@ local function gitdl_folder(git_path, local_path)
         fs.makeDir(local_path)
     end
 
-    local git_file_string = http.get(git_path).readAll()
-    if not git_file_string then
-        error("Could not connect to remote at: " .. git_path)
-    end
+    local git_connection = http.get(git_path)
+    assert(git_connection, "Failed to connect to the remote repo at: " .. git_path)
+    local git_file_string = git_connection.readAll()
     local remote_files = textutils.unserialiseJSON(git_file_string)
     local available_files = {}
     for index, file in ipairs(remote_files) do
@@ -39,7 +38,7 @@ local function gitdl_folder(git_path, local_path)
         end
     end
 
-    for filename, url in available_files do
+    for filename, url in ipairs(available_files) do
         webdl(url, local_path .. "/" .. filename)
     end
 end
