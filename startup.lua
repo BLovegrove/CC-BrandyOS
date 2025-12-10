@@ -3,8 +3,9 @@ if fs.exists("installer.lua") then
     fs.delete("installer.lua")
 end
 
--- include config
+-- include config + core libraries
 local cfg = require("config")
+local pretty = require("cc.pretty")
 
 -- declare local functions
 local function ends_with(str, ending)
@@ -35,7 +36,21 @@ local function gitdl_folder(git_path, local_path, requested_files)
         fs.makeDir(local_path)
     end
 
-    local git_connection = http.get(git_path)
+    local git_connection = nil
+
+    -- grab auth token from local file
+    if fs.exists(".github") then
+        local gh_token = fs.open(".github", "r").readLine()
+        local headers = {}
+        headers["Authorization"] = "token " .. gh_token
+        git_connection = http.get(git_path, headers)
+    else
+        print("WARNING! .github file not detected in root dir.")
+        print("Un-authorized github requests only have a 60/Hour ratelimit.")
+        print("Add a personal access token to .github in your root dir to enable auth")
+        git_connection = http.get(git_path)
+    end
+
     assert(git_connection, "Failed to connect to the remote repo at: " .. git_path)
     local git_file_string = git_connection.readAll()
     local remote_files = textutils.unserialiseJSON(git_file_string)
@@ -54,11 +69,9 @@ end
 -- acquire library files
 gitdl_folder(cfg.remote_paths.lib, "/lib")
 local parseEnabled = require("lib.parseEnabled")
-local pretty = require("cc.pretty")
 
 -- declare variables
 local running = true
-local env = {}
 local shells = {}
 
 -- main loop
