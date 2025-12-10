@@ -38,8 +38,8 @@ local function gitdl_folder(git_path, local_path)
         end
     end
 
-    for filename, url in ipairs(available_files) do
-        webdl(url, local_path .. "/" .. filename)
+    for index, file in ipairs(available_files) do
+        webdl(file.url, local_path .. "/" .. file.name)
     end
 end
 
