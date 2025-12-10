@@ -1,4 +1,4 @@
-Run the following and execute it with ./installer.lua
+Run the following
 ```
-wget https://raw.github.com/blovegrove/cc-BrandyOS/main/installer.lua installer.lua
+oadstring(http.get("https://raw.github.com/blovegrove/cc-BrandyOS/main/installer.lua").readAll())(exit)
 ```
