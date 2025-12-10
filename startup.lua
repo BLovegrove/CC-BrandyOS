@@ -87,13 +87,11 @@ while running do
         if not fs.exists("/services") then
             fs.makeDir("/services")
         end
-        -- for service, enabled in pairs(cfg.services_enabled) do
-        --     webdl(cfg.remote_paths.services .. service .. ".lua",
-        --         fs.combine("services", service .. ".lua"))
-        -- end
         gitdl_folder(cfg.remote_paths.services, "/services", cfg.services_enabled)
         for service, enabled in pairs(cfg.services_enabled) do
-            shells[service] = multishell.launch(env, fs.combine("/services", service))
+            local service_friendlyname = removeExtension(service)
+            shells[service_friendlyname] = shell.openTab(fs.combine("/services", service))
+            sleep(1)
         end
     end
 
