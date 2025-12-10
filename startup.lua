@@ -41,7 +41,7 @@ local function gitdl_folder(git_path, local_path, requested_files)
     local remote_files = textutils.unserialiseJSON(git_file_string)
     local available_files = {}
     for index, file in ipairs(remote_files) do
-        if file['type'] == 'file' and ends_with(file['name'], '.lua') and (not requested_files or tableContains(requested_files, removeExtension(file["name"]))) then
+        if file['type'] == 'file' and ends_with(file['name'], '.lua') and (not requested_files or tableContains(requested_files, file["name"])) then
             table.insert(available_files, { name = file['name'], url = file['download_url'] })
         end
     end
@@ -54,6 +54,7 @@ end
 -- acquire library files
 gitdl_folder(cfg.remote_paths.lib, "/lib")
 local parseEnabled = require("lib.parseEnabled")
+local pretty = require("cc.pretty")
 
 -- declare variables
 local running = true
@@ -91,7 +92,7 @@ while running do
         --         fs.combine("services", service .. ".lua"))
         -- end
         gitdl_folder(cfg.remote_paths.services, "/services", cfg.services_enabled)
-        for index, service in ipairs(cfg.services_enabled) do
+        for service, enabled in pairs(cfg.services_enabled) do
             shells[service] = multishell.launch(env, fs.combine("/services", service))
         end
     end
