@@ -16,6 +16,10 @@ print("")
 
 webdl(REPO_ROOT .. "startup.lua", "startup.lua")
 webdl(REPO_ROOT .. "config.lua", "config.lua")
+fs.makeDir("lib")
+webdl(REPO_ROOT .. "lib/download.lua", "lib/download.lua")
+webdl(REPO_ROOT .. "lib/parse.lua", "lib/parse.lua")
+webdl(REPO_ROOT .. "lib/stringtools.lua", "lib/stringtools.lua")
 
 print("Done! Booting into BrandyOS in 5 seconds...")
 sleep(5)

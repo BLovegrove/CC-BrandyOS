@@ -1,4 +1,4 @@
-local function main(filePath)
+local function services_enabled(filePath)
     local file = fs.open(filePath, "r")
     local lines = {}
     while true do
@@ -14,4 +14,4 @@ local function main(filePath)
     return lines
 end
 
-return main
+return {services_enabled = services_enabled}
