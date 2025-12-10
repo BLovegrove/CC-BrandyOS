@@ -11,6 +11,14 @@ local function ends_with(str, ending)
     return ending == "" or str:sub(- #ending) == ending
 end
 
+local function tableContains(table, key)
+    return table[key] ~= nil
+end
+
+local function removeExtension(str)
+    return str:match("%.(.+)$")
+end
+
 local function webdl(url, localFile)
     local content = http.get(url).readAll()
     if not content then
@@ -22,7 +30,7 @@ local function webdl(url, localFile)
     end
 end
 
-local function gitdl_folder(git_path, local_path)
+local function gitdl_folder(git_path, local_path, requested_files)
     if not fs.exists(local_path) then
         fs.makeDir(local_path)
     end
@@ -33,7 +41,7 @@ local function gitdl_folder(git_path, local_path)
     local remote_files = textutils.unserialiseJSON(git_file_string)
     local available_files = {}
     for index, file in ipairs(remote_files) do
-        if file['type'] == 'file' and ends_with(file['name'], '.lua') then
+        if file['type'] == 'file' and ends_with(file['name'], '.lua') and (not requested_files or tableContains(requested_files, removeExtension(file["name"]))) then
             table.insert(available_files, { name = file['name'], url = file['download_url'] })
         end
     end
@@ -43,13 +51,9 @@ local function gitdl_folder(git_path, local_path)
     end
 end
 
-local function removeExtension(str)
-    return str:gsub("%.lua", "")
-end
-
 -- acquire library files
 gitdl_folder(cfg.remote_paths.lib, "/lib")
-local fileToTable = require("lib.fileToTable")
+local parseEnabled = require("lib.parseEnabled")
 
 -- declare variables
 local running = true
@@ -76,21 +80,20 @@ while running do
         file.write(services_enabled_string)
         file.close()
 
-        cfg.services_enabled = fileToTable(".services-enabled")
+        cfg.services_enabled = parseEnabled(".services-enabled")
 
         print("List discovered. Attempting to download services...")
         if not fs.exists("/services") then
             fs.makeDir("/services")
         end
+        -- for service, enabled in pairs(cfg.services_enabled) do
+        --     webdl(cfg.remote_paths.services .. service .. ".lua",
+        --         fs.combine("services", service .. ".lua"))
+        -- end
+        gitdl_folder(cfg.remote_paths.services, "/services", cfg.services_enabled)
         for index, service in ipairs(cfg.services_enabled) do
-            webdl(cfg.remote_paths.services .. service .. ".lua",
-                fs.combine("services", service .. ".service"))
+            shells[service] = multishell.launch(env, fs.combine("/services", service))
         end
-        for index, service in ipairs(cfg.services_enabled) do
-            shells[service] = multishell.launch(env, fs.combine("services", service .. ".service"))
-        end
-
-        print(shells)
     end
 
     running = false

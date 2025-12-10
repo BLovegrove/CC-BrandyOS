@@ -7,7 +7,7 @@ local function main(filePath)
         -- If line is nil then we've reached the end of the file and should stop
         if not line then break end
 
-        lines[#lines + 1] = line
+        lines[line] = true
     end
 
     file.close()
