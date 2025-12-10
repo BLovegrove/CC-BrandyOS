@@ -6,11 +6,6 @@ end
 -- include config + core libraries
 local cfg = require("config")
 
--- declare local functions
-local function tableContains(table, key)
-    return table[key] ~= nil
-end
-
 -- download raw http/s response from web
 local download = require("lib.download")
 local parse = require("lib.parse")

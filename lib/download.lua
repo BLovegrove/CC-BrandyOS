@@ -1,5 +1,5 @@
-local ends_with = require("lib.ends_with")
-local table_contains = require("lib.table_contains")
+local stringtools = require("lib.stringtools")
+local tabletools = require("lib.tabletools")
 
 local function web(url, localFile)
     local content = http.get(url).readAll()
@@ -42,7 +42,7 @@ local function gitfolder(git_path, local_path, requested_files)
     -- add files to download target list, ignoring entries not contained in the requested list if provided
     local available_files = {}
     for index, file in ipairs(git_files) do
-        if file['type'] == 'file' and ends_with(file['name'], '.lua') and (not requested_files or table_contains(requested_files, file["name"])) then
+        if file['type'] == 'file' and stringtools.ends_with(file['name'], '.lua') and (not requested_files or tabletools.contains(requested_files, file["name"])) then
             table.insert(available_files, { name = file['name'], url = file['download_url'] })
         end
     end
@@ -53,4 +53,4 @@ local function gitfolder(git_path, local_path, requested_files)
     end
 end
 
-return {gitfolder = gitfolder, web = web}
+return { gitfolder = gitfolder, web = web }
