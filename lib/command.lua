@@ -19,13 +19,18 @@ local function authenticate(packet)
     end
 end
 
-local function sanitize(packet, valid_commands)
+local function sanitize(packet, command_info)
     if not packet then
         error("Missing packet. Can't sanitize command without input.")
     end
 
-    if not valid_commands then
+    if not command_info then
         error("Missing command list. Valid list of commands needed to check inoput against.")
+    end
+
+    local valid_commands = {}
+    for command, data in ipairs(command_info) do
+        valid_commands[command] = data.description
     end
 
     local command = packet.command
@@ -50,8 +55,9 @@ local function sanitize(packet, valid_commands)
         return
     end
 
-    if tabletools.contains(valid_commands, command) then
-        comlink.reply_success(sender)
+    if tabletools.contains(command_info, command) then
+        comlink.reply_success(sender, command_info[command].success)
+        print("RCV_CMD: AUTH ACCEPTED. EXC <" .. command .. ">")
         return command
     else
         comlink.reply_unknown(sender, "Command not found.", valid_commands)

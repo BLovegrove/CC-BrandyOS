@@ -10,10 +10,22 @@ local input_level = redstone.getAnalogInput("top") + 1
 local run_value = 0
 
 local command_list = {
-    ["help"] = "Returns a handy list of the available commands on this endpoint",
-    ["lights.full"] = "Sets all runway lights to on.",
-    ["lights.exit"] = "Enables the Exit animation for the runway lights.",
-    ["lights.entry"] = "Enables the Entry animation for the runway lights."
+    ["help"] = {
+        description = "Returns a handy list of the available commands on this endpoint",
+        success = "Help response sent."
+    },
+    ["lights.full"] = {
+        description = "Sets all runway lights to on.",
+        success = "Lights set to full."
+    },
+    ["lights.exit"] = {
+        description = "Enables the Exit animation for the runway lights.",
+        success = "Exit lightning animation enabled."
+    },
+    ["lights.entry"] = {
+        description = "Enables the Entry animation for the runway lights.",
+        success = "Entry lighting animation enabled."
+    }
 }
 
 local function set_lights(state)

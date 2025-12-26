@@ -134,10 +134,11 @@ local function respond(recipient, packet)
     rednet.send(recipient, packet, packet.protocol)
 end
 
-local function reply_success(recipient, context)
+local function reply_success(recipient, message, context)
     local packet = {
         protocol = cfg.protocols.network,
         response_code = 200,
+        message = message,
         context = context
     }
 

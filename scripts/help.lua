@@ -16,7 +16,7 @@ while running do
 
     local endpoint = rednet.lookup(cfg.protocols.network, hostname)
     if endpoint then
-        print("Found endpoint at ID#" .. endpoint)
+        print("\nFound endpoint at ID#" .. endpoint .. "\n")
         local reply = comlink.send_command(endpoint, "help", crypt.read_key())
         if reply then
             comlink.decode_response(reply)
