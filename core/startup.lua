@@ -47,7 +47,7 @@ while running do
             fs.makeDir("/services")
         end
         download.gitfolder_noupdate(cfg.remote_paths.services, "/services", cfg.services_enabled)
-        for service, enabled in pairs(cfg.services_enabled) do
+        for index, service in pairs(cfg.services_enabled) do
             local service_friendlyname = stringtools.remove_extension(service)
             shells[service_friendlyname] = shell.openTab(fs.combine("/services", service))
             sleep(1)
