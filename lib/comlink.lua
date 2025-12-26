@@ -1,3 +1,5 @@
+local cfg = require("/core.config")
+
 local function send_command(recipient_hostname, command_string, protocol, auth_key)
     -- guards
     if not recipient_hostname then
@@ -18,7 +20,7 @@ local function send_command(recipient_hostname, command_string, protocol, auth_k
     end
     --
 
-    local recipient_id = rednet.lookup(protocol, recipient_hostname)
+    local recipient_id = rednet.lookup(cfg.protocols.request, recipient_hostname)
     if not recipient_id then
         error(
             "Hostname lookup failed. Please ensure the host you are trying to reach is on, chunkloaded, and registered.")
