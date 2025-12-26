@@ -42,8 +42,8 @@ local function gitfolder(git_path, local_path, requested_files)
     -- add files to download target list, ignoring entries not contained in the requested list if provided
     local available_files = {}
     for index, file in ipairs(git_files) do
-        if file['type'] == 'file' and stringtools.ends_with(file['name'], '.lua') and (not requested_files or tabletools.contains(requested_files, file["name"])) then
-            table.insert(available_files, { name = file['name'], url = file['download_url'] })
+        if file["type"] == "file" and stringtools.ends_with(file["name"], ".lua") and (not requested_files or tabletools.contains(requested_files, file["name"])) then
+            table.insert(available_files, { name = file["name"], url = file["download_url"] })
         end
     end
 
