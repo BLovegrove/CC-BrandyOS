@@ -73,7 +73,8 @@ local function update_program()
                 run_value = 2
                 comlink.reply_success(sender, cfg.protocols.command)
             else
-                comlink.reply_error(sender, cfg.protocols.command, 400, {message = "Command not recognised.", commands = command_list})
+                comlink.reply_error(sender, cfg.protocols.command, 400,
+                    { message = "Command not recognised.", commands = command_list })
             end
 
             return
@@ -81,6 +82,15 @@ local function update_program()
 
         sleep(0.05)
     end
+end
+
+if not fs.exists(".hostname") then
+    print(
+        "Failed to find hostname. a .hostname file with a single line containing the hostname fo this system must be present to connect to the network.")
+else
+    local hostname_file = fs.open("/.hostname")
+    local hostname = hostname_file.readLine()
+    rednet.host(cfg.protocols.request, hostname)
 end
 
 while true do
