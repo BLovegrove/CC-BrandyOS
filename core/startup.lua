@@ -53,6 +53,11 @@ while running do
             sleep(1)
         end
         print("Done!\n")
+
+        print("Checking for autoupdate trigger...")
+        if fs.exists(".autoupdate") then
+            -- do autoupdate stuff
+        end
     else
         print("Running in Core mode. Disabling startup script.\n")
         fs.move("/startup.lua", "/startup.disabled")
