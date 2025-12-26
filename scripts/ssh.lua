@@ -24,7 +24,8 @@ while main do
         print("\nConnected to: " .. hostname .. ".\n")
         local ssh = true
         while ssh do
-            write(username .. "@" .. hostname .. "> ")
+            print(username .. "@" .. hostname)
+            write("> ")
             local command = read()
 
             if string.lower(command) == "exit" then
