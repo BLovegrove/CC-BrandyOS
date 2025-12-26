@@ -17,6 +17,12 @@ local function gitfolder(git_path, local_path, requested_files)
         fs.makeDir(local_path)
     end
 
+    local requests_formatted = {}
+    for index, item in requested_files do
+        requests_formatted[item] = true
+    end
+    requested_files = requests_formatted
+
     local git_connection = nil
 
     -- grab auth token from local file / warn for unauthed access
@@ -58,7 +64,7 @@ local function gitfolder_noupdate(git_path, local_path, requested_files)
 
     if requested_files then
         for index, filename in ipairs(requested_files) do
-            local file = fs.combine(fs.combine("/", local_path), filename)
+            local file = fs.combine(local_path, filename)
             if not fs.exists(file) then
                 table.insert(files_needed, filename)
             end
