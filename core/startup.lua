@@ -1,4 +1,5 @@
--- clear installer
+-- clear installer and screen
+term.clear()
 if fs.exists("installer.lua") then
     fs.delete("installer.lua")
 end
@@ -20,17 +21,17 @@ local shells = {}
 
 -- main loop
 while running do
-    print("Welcome to BrandyOS v" .. cfg.version .. "!\r")
+    print("Welcome to BrandyOS v" .. cfg.version .. "!\n")
 
     -- scan for existing service request list
-    print("Checking for a list of services to enable...\r")
+    print("Checking for a list of services to enable...")
     local services_enabled_file = nil
     if fs.exists("/disk/.services-enabled") then
         services_enabled_file = "/disk/.services-enabled"
     elseif fs.exists(".services-enabled") then
         services_enabled_file = ".services-enabled"
     else
-        print("No enabled services found. Initialising core...")
+        print("No enabled services found. Initialising core...\n")
     end
 
     -- init services if requested, core service if not
@@ -53,8 +54,9 @@ while running do
             shells[service_friendlyname] = shell.openTab(fs.combine("/services", service))
             sleep(1)
         end
+        print("Done!\n")
     else
-        print("No services found. Disabling startup script.")
+        print("No services enabled. Disabling startup script.\n")
         fs.move("/startup.lua", "/startup.disabled")
 
         print("Would you like to download script collection?")
