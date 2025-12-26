@@ -29,7 +29,7 @@ local function sanitize(packet, command_info)
     end
 
     local valid_commands = {}
-    for command, data in ipairs(command_info) do
+    for command, data in pairs(command_info) do
         valid_commands[command] = data.description
         local pretty = require("cc.pretty")
         pretty.pretty_print(command)
