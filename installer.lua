@@ -12,7 +12,6 @@ local function webdl(url, localFile)
 end
 
 print("Downloading OS from Remote...")
-print("")
 
 fs.makeDir("core")
 webdl(REPO_ROOT .. "core/startup.lua", "startup.lua")
@@ -25,7 +24,7 @@ webdl(REPO_ROOT .. "core/parse.lua", "core/parse.lua")
 webdl(REPO_ROOT .. "core/string.lua", "core/string.lua")
 webdl(REPO_ROOT .. "core/table.lua", "core/table.lua")
 
-print("Done!")
+print("Done!\n")
 
 local hostname_valid = false
 while hostname_valid == false do

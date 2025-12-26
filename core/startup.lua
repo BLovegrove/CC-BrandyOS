@@ -1,5 +1,6 @@
 -- clear installer and screen
 term.clear()
+term.setCursorPos(0, 0)
 if fs.exists("installer.lua") then
     fs.delete("installer.lua")
 end
@@ -11,9 +12,6 @@ local cfg = require("/core.config")
 local download = require("/core.download")
 local parse = require("/core.parse")
 local stringtools = require("/core.string")
-
--- acquire library files
-download.gitfolder(cfg.remote_paths.lib, "/lib")
 
 -- declare variables
 local running = true
@@ -56,7 +54,7 @@ while running do
         end
         print("Done!\n")
     else
-        print("No services enabled. Disabling startup script.\n")
+        print("Running in Core mode. Disabling startup script.\n")
         fs.move("/startup.lua", "/startup.disabled")
 
         print("Would you like to download script collection?")
