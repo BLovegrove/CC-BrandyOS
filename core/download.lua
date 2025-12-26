@@ -18,7 +18,7 @@ local function gitfolder(git_path, local_path, requested_files)
     end
 
     local requests_formatted = {}
-    for index, item in requested_files do
+    for index, item in ipairs(requested_files) do
         requests_formatted[item] = true
     end
     requested_files = requests_formatted
