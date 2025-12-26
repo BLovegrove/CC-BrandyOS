@@ -27,9 +27,9 @@ webdl(REPO_ROOT .. "core/table.lua", "core/table.lua")
 print("Done!\n")
 
 local hostname_valid = false
+print(
+    "Please enter the hostname for this system (can be changed in .hostname later). This will also change the computers label.\n")
 while hostname_valid == false do
-    print(
-        "Please enter the hostname for this system (can be changed in .hostname later). This will also change the computers label.\n")
     write("host> ")
     local hostname = read()
     if hostname ~= "localhost" then
@@ -39,11 +39,11 @@ while hostname_valid == false do
         os.setComputerLabel(hostname)
         hostname_valid = true
     else
-        print("\nError: localhost is a reserved hostname. Please pick something else.\n")
+        print("\nError: localhost is a reserved hostname.")
     end
 end
 
-print("Success. Checking for auth file on disk...")
+print("\nSuccess. Checking for auth file on disk...")
 if fs.exists("/disk/.auth") then
     fs.copy("/disk/.auth", "/.auth")
     print("Authorisation file copied to root. Can be altered at /.auth\n")
