@@ -1,7 +1,7 @@
 local cfg = require("/core.config")
 local download = require("/core.download")
 
-download.gitfolder_noupdate(cfg.remote_paths.lib, "/lib", { "crypt", "comlink" })
+download.gitfolder_noupdate(cfg.remote_paths.lib, "/lib", { "crypt.lua", "comlink.lua" })
 local comlink = require("/lib.comlink")
 local crypt = require("/lib.crypt")
 
