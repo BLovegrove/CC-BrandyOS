@@ -47,14 +47,15 @@ while running do
         if not fs.exists("/services") then
             fs.makeDir("/services")
         end
-        download.gitfolder(cfg.remote_paths.services, "/services", cfg.services_enabled)
+        download.gitfolder_noupdate(cfg.remote_paths.services, "/services", cfg.services_enabled)
         for service, enabled in pairs(cfg.services_enabled) do
             local service_friendlyname = stringtools.remove_extension(service)
             shells[service_friendlyname] = shell.openTab(fs.combine("/services", service))
             sleep(1)
         end
     else
-        print("core stuff here")
+        print("No services found. Disabling startup script and exiting to shell...")
+        fs.move("/startup.lua", "/startup.disabled")
     end
 
     running = false

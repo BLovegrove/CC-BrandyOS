@@ -8,8 +8,7 @@ local cfg = {
         core = "https://api.github.com/repos/blovegrove/cc-brandyos/contents/core/"
     },
     protocols = {
-        command = "ssh://brandynet",
-        request = "http://brandynet"
+        network = "http://brandynet"
     }
 }
 

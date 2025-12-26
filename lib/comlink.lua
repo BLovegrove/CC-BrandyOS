@@ -1,149 +1,198 @@
+local pretty = require("cc.pretty")
 local cfg = require("/core.config")
 
-local function send_command(recipient_hostname, command_string, protocol, auth_key)
+-- opens rednet ports and establishes hostname
+local function init()
+    if not fs.exists(".hostname") then
+        print(
+            "Failed to find hostname. a .hostname file with a single line containing the hostname fo this system must be present to connect to the network.")
+    else
+        local hostname_file = fs.open("/.hostname", "r")
+        local hostname = hostname_file.readLine()
+        peripheral.find("modem", rednet.open)
+        rednet.host(cfg.protocols.network, hostname)
+    end
+end
+
+local function decode_response(packet)
+    if not packet.response_code then
+        error("No response code found in decoded packet. Check sender.")
+    end
+
+    local response = nil
+    local context = nil
+
+    if packet.response_code == 100 then
+        if packet.message then
+            response = packet.message
+        else
+            response = "Success 100: Received requested information."
+        end
+
+        if packet.context then
+            context = packet.context
+        end
+    elseif packet.response_code == 200 then
+        if packet.message then
+            response = "Success: " .. packet.message
+        else
+            response = "Success 200: OK."
+        end
+        if packet.context then
+            context = { ["Context: "] = packet.context }
+        end
+    elseif packet.response_code == 403 then
+        response = "Error 403: Forbidden. Mismatch in auth header and endpoint key."
+    elseif packet.response_code == 404 then
+        if packet.message then
+            response = "Error 404: " .. packet.message
+        else
+            response = "Error 404: Feature not found."
+        end
+
+        if packet.context then
+            context = packet.context
+        end
+    else
+        response = "Error ???: Unknown error code provided."
+        context = { ["Response Code"] = packet.response_code, ["Response Context"] = pretty.pretty(packet.context) }
+    end
+
+    if response then
+        print(response)
+    end
+    if context then
+        for key, value in ipairs(context) do
+            print(tostring(key) .. tostring(value))
+        end
+    end
+end
+
+local function request(recipient, packet, timeout)
     -- guards
-    if not recipient_hostname then
+    if not recipient then
         error("Failed to specify recipient machine.")
     end
 
+    if not packet then
+        error("Failed to provide packet for the request.")
+    end
+
+    if not packet.protocol then
+        error("Packet error: No protocol header included in packet.")
+    end
+    --
+
+    packet.sender = os.getComputerID
+
+    rednet.send(recipient, packet, packet.protocl)
+
+    if not timeout then
+        timeout = 5
+    end
+
+    local sender, reply = rednet.receive(packet.protocol, timeout)
+    return reply
+end
+
+
+local function send_command(recipient, command_string, auth_key, timeout)
     if not command_string then
         error("Failed to specify a command to send.")
     end
 
     if not auth_key then
-        error(
-            "Authorisation key not present. Ensure you provide one - commands cannot be accepted without a valid authorisation key.")
-    end
-
-    if not protocol then
-        protocol = "ssh://brandynet"
-    end
-    --
-
-    local recipient_id = rednet.lookup(cfg.protocols.request, recipient_hostname)
-    if not recipient_id then
-        error(
-            "Hostname lookup failed. Please ensure the host you are trying to reach is on, chunkloaded, and registered.")
+        auth_key = ""
     end
 
     local packet = {
         command = command_string,
-        auth = auth_key
+        auth = auth_key,
+        protocol = cfg.protocols.network
     }
 
-    rednet.send(recipient_id, packet, protocol)
+    request(recipient, packet, timeout)
 end
 
-local function ensure_command(recipient_hostname, command_string, protocol, auth_key, timeout)
-    send_command(recipient_hostname, command_string, protocol, auth_key)
-    if not timeout then
-        timeout = 5
+local function respond(recipient, packet)
+    if not packet then
+        error("Failed to provide request packet. Cannot send request without data.")
     end
 
-    print("Waiting " .. timeout .. " seconds for reply...")
-
-    local responder, reply, reply_protocol = rednet.receive(protocol, timeout)
-    if not responder then
-        print("Failed to receive reply. Check peer status.")
-    end
-
-    local response_code = reply.response_code
-    if not response_code then
-        print("No response code returned. Check response control on peer system.")
-    end
-
-    print("Response code returned: " .. response_code)
-    local response_details = reply.description
-    if response_details then
-        print("Response details: " .. response_details)
-    end
-end
-
-local function reply_success(recipient, protocol, description)
     if not recipient then
-        error("Failed to provide sender ID. Can't reply without destination.")
+        error("Failed to provide recipient. Can't reply without destination.")
     end
 
-    if not protocol then
-        error("Failed to provide communcation protocol. This is necessary to stay on the right channel.")
+    if not packet.protocol then
+        error("Packet error: No protocol. This is necessary to stay on the right channel.")
     end
 
+    packet.sender = os.getComputerID()
+
+    rednet.send(recipient, packet, packet.protocol)
+end
+
+local function reply_success(recipient, context)
     local packet = {
+        protocol = cfg.protocols.network,
         response_code = 200,
-        description = description
+        context = context
     }
 
-    rednet.send(recipient, packet, protocol)
+    respond(recipient, packet)
 end
 
-local function reply_error(recipient, protocol, error_code, description)
-    if not recipient then
-        error("Failed to provide recipient ID. Can't reply without destination.")
-    end
-
-    if not protocol then
-        error("Failed to provide communcation protocol. This is necessary to stay on the right channel.")
-    end
-
-    if not error_code then
-        error("Error code required to describe what failed.")
-    end
-
+local function reply_forbidden(recipient, message, context)
     local packet = {
-        response_code = error_code,
-        description = description
+        response_code = 403,
+        message = message,
+        context = context
     }
 
-    rednet.send(recipient, packet, protocol)
+    respond(recipient, packet)
 end
 
-local function reply(recipient, protocol, packet)
-    rednet.send(recipient, packet, protocol)
+local function reply_unknown(recipient, message, context)
+    local packet = {
+        response_code = 404,
+        protocol = cfg.protocols.network,
+        message = message,
+        context = context
+    }
+
+    respond(recipient, packet)
 end
 
-local function await_command(protocol, timeout, auth_key)
-    local sender, message, sender_protocol = rednet.receive(protocol, timeout)
+local function await_command(needs_auth, timeout)
+    local from, reply = rednet.receive(cfg.protocols.network, timeout)
 
-    if not message then
+    if not reply then
         return nil
     end
 
-    local command = message.command
-    if not command then
+    if not reply.command then
         error("Command not provided by sender. Check system running on peer.")
     end
 
-    local authorisation = message.auth
-    if not authorisation then
-        error("Sender failed to provide authorisation code. Check system running on peer.")
+    if not reply.auth and needs_auth == true then
+        error("Sender failed to provide authorisation header. Check system running on peer.")
     end
 
-    local local_authorisation = auth_key
-    if not local_authorisation then
-        error("No local authorisation key provided. This is needed to confirm sender identity.")
+    if not reply.sender then
+        error("Sender ID not attached. This is important for ID-ing sender after packet has been passed around.")
     end
 
-    local response_description = nil
-
-    if authorisation ~= local_authorisation then
-        response_description = "Failed to authorise request. Provided key invalid."
-        print(response_description)
-        reply_error(sender, protocol, 500, response_description)
-        return nil
-    else
-        return command, sender
-    end
-end
-
-local function request_help(hostname, protocol, timeout, auth_key)
-    -- send requiest for which commands are available in the target system and receive command list with attached descriptions
+    return reply
 end
 
 return {
+    -- request = request can be exposed for custom http requests
+    init = init,
     send_command = send_command,
-    ensure_command = ensure_command,
-    reply_success = reply_success,
-    reply_error = reply_error,
     await_command = await_command,
-    reply = reply
+    reply = respond,
+    reply_unknown = reply_unknown,
+    reply_success = reply_success,
+    reply_forbidden = reply_forbidden,
+    decode_response = decode_response
 }

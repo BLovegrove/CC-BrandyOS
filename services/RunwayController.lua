@@ -1,18 +1,19 @@
 local cfg = require("/core.config")
 local download = require("/core.download")
 
-download.gitfolder(cfg.remote_paths.lib, "/lib", { "comlink.lua", "crypt.lua" })
-
+download.gitfolder_noupdate(cfg.remote_paths.lib, "/lib", { "comlink.lua", "command.lua" })
 local comlink = require("/lib.comlink")
-local crypt = require("/lib.crypt")
+local command_handler = require("/lib.command")
 
 local relay = peripheral.find("redstone_relay")
 local input_level = redstone.getAnalogInput("top") + 1
 local run_value = 0
 
 local command_list = {
-    help = "Help: Returns a handy list of the available commands on this endpoint",
-    lights = "Lights: lights.<state> - where state can be full, exit, or entry depending on the required animation.",
+    ["help"] = "Returns a handy list of the available commands on this endpoint",
+    ["lights.full"] = "Sets all runway lights to on.",
+    ["lights.exit"] = "Enables the Exit animation for the runway lights.",
+    ["lights.entry"] = "Enables the Entry animation for the runway lights."
 }
 
 local function set_lights(state)
@@ -52,31 +53,22 @@ local function update_lights()
 end
 
 local function update_program()
-    while true do
-        local command, sender = comlink.await_command(cfg.protocols.command, 5, crypt.read_key())
+    local alwaiting_update = true
 
-        if command then
-            if command == "help" then
-                local packet = {
-                    response_code = 200,
-                    message = "The following commands are available for the RunwayController endpoint:",
-                    commands = command_list
-                }
-                comlink.reply(sender, cfg.protocols.command, packet)
-            elseif command == "lights.full" then
+    while alwaiting_update do
+        local packet = comlink.await_command(cfg.protocols.network)
+
+        if packet then
+            local command = command_handler.sanitize(packet, command_list)
+            if command == "lights.full" then
                 run_value = 0
-                comlink.reply_success(sender, cfg.protocols.command)
             elseif command == "lights.exit" then
                 run_value = 1
-                comlink.reply_success(sender, cfg.protocols.command)
             elseif command == "lights.entry" then
                 run_value = 2
-                comlink.reply_success(sender, cfg.protocols.command)
-            else
-                comlink.reply_error(sender, cfg.protocols.command, 400,
-                    { message = "Command not recognised.", commands = command_list })
             end
 
+            alwaiting_update = false
             return
         end
 
@@ -84,15 +76,7 @@ local function update_program()
     end
 end
 
-if not fs.exists(".hostname") then
-    print(
-        "Failed to find hostname. a .hostname file with a single line containing the hostname fo this system must be present to connect to the network.")
-else
-    local hostname_file = fs.open("/.hostname", "r")
-    local hostname = hostname_file.readLine()
-    peripheral.find("modem", rednet.open)
-    rednet.host(cfg.protocols.request, hostname)
-end
+comlink.init()
 
 while true do
     parallel.waitForAny(update_lights, update_program)
