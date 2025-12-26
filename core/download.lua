@@ -54,14 +54,16 @@ local function gitfolder(git_path, local_path, requested_files)
 end
 
 local function gitfolder_noupdate(git_path, local_path, requested_files)
-    local files_needed = {}
-    for filename, enabled in ipairs(requested_files) do
-        if not fs.exists(fs.combine(local_path, filename)) then
-            files_needed[filename] = true
+    local files_needed = nil
+    if requested_files then
+        for filename, enabled in ipairs(requested_files) do
+            if not fs.exists(fs.combine(local_path, filename)) then
+                files_needed[filename] = true
+            end
         end
     end
 
-    if files_needed == {} then
+    if not files_needed then
         return
     end
 
