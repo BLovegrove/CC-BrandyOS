@@ -1,5 +1,5 @@
-local cfg = require("config")
-local download = require("lib.download")
+local cfg = require("core.config")
+local download = require("core.download")
 
 download.gitfolder(cfg.remote_paths.lib, "/lib", { "comlink.lua", "crypt.lua" })
 

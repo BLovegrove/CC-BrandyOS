@@ -1,5 +1,5 @@
-local stringtools = require("lib.stringtools")
-local tabletools = require("lib.tabletools")
+local stringtools = require("core.string")
+local tabletools = require("core.table")
 
 local function web(url, localFile)
     local content = http.get(url).readAll()
