@@ -42,16 +42,24 @@ while hostname_valid == false do
 end
 
 print("Success. Checking for auth file on disk...")
-
 if fs.exists("/disk/.auth") then
     fs.copy("/disk/.auth", "/.auth")
-    print("Authorisation file copied to root.")
+    print("Authorisation file copied to root. Can be altered at /.auth\n")
 else
     print(
-        "Warning: Could not find .auth file on disk. Please write a custom one to your root directory containing a single line of characters representing your authorisation key that must be consistent between all nodes in your network.")
+        "Warning: Could not find .auth file on disk. Please write a custom one to your root directory containing a single line of characters representing your authorisation key that must be consistent between all nodes in your network.\n")
 end
 
-print("\nBooting into BrandyOS in 5 seconds...")
+print("Checking for GitHub token file...")
+if fs.exists("/disk/.github") then
+    fs.copy("/disk/.github", "/.github")
+    print("GitHub token file copied to root. Can be altered at /.github\n")
+else
+    print(
+        "Warning: Could not find .github file on disk. Please write a custom one to your root directory containing a single line of youre discord personal access token. This is needed to bypass ratelimits.\n")
+end
+
+print("Booting into BrandyOS in 5 seconds...")
 
 sleep(5)
 
