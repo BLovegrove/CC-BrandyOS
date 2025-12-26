@@ -19,6 +19,12 @@ print("\nEnter a hostname: ")
 while main do
     write("> ")
     local hostname = read()
+
+    if string.lower(hostname) == "exit" then
+        main = false
+        goto continue
+    end
+
     local endpoint = rednet.lookup(cfg.protocols.network, hostname)
     if endpoint then
         print("\nConnected to: " .. hostname .. ".\n")
@@ -38,7 +44,12 @@ while main do
 
             ::continue::
         end
+        term.clear()
+        term.setCursorPos(1, 1)
+        print("\nEnter a hostname: ")
     else
         print("Error: Endpoint not found. Try again.")
     end
+
+    ::continue::
 end

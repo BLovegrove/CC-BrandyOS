@@ -31,6 +31,9 @@ local function sanitize(packet, command_info)
     local valid_commands = {}
     for command, data in ipairs(command_info) do
         valid_commands[command] = data.description
+        local pretty = require("cc.pretty")
+        pretty.pretty_print(command)
+        pretty.pretty_print(data)
     end
 
     local command = packet.command
@@ -46,8 +49,6 @@ local function sanitize(packet, command_info)
             context = valid_commands
         }
         comlink.respond(sender, help_packet)
-        local pretty = require("cc.pretty")
-        pretty.pretty_print(valid_commands)
         return
     end
 
