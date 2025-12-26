@@ -7,11 +7,11 @@ local function services_enabled(filePath)
         -- If line is nil then we've reached the end of the file and should stop
         if not line then break end
 
-        lines[line] = true
+        table.insert(lines, line)
     end
 
     file.close()
     return lines
 end
 
-return {services_enabled = services_enabled}
+return { services_enabled = services_enabled }

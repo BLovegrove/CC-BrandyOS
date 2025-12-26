@@ -56,7 +56,7 @@ end
 local function gitfolder_noupdate(git_path, local_path, requested_files)
     local files_needed = nil
     if requested_files then
-        for filename, enabled in ipairs(requested_files) do
+        for index, filename in ipairs(requested_files) do
             if not fs.exists(fs.combine(local_path, filename)) then
                 files_needed[filename] = true
             end
