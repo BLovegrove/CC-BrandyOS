@@ -19,8 +19,8 @@ webdl(REPO_ROOT .. "core/startup.lua", "startup.lua")
 webdl(REPO_ROOT .. "core/config.lua", "core/config.lua")
 webdl(REPO_ROOT .. "core/download.lua", "core/download.lua")
 webdl(REPO_ROOT .. "core/parse.lua", "core/parse.lua")
-webdl(REPO_ROOT .. "core/stringtools.lua", "core/stringtools.lua")
-webdl(REPO_ROOT .. "core/tabletools.lua", "core/tabletools.lua")
+webdl(REPO_ROOT .. "core/string.lua", "core/string.lua")
+webdl(REPO_ROOT .. "core/table.lua", "core/table.lua")
 
 print("Done!")
 
