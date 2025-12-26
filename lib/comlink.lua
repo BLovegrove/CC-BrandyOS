@@ -84,7 +84,7 @@ local function request(recipient, packet, timeout)
     end
     --
 
-    packet.sender = os.getComputerID
+    packet.sender = os.getComputerID()
 
     rednet.send(recipient, packet, packet.protocl)
 

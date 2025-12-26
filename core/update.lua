@@ -16,7 +16,7 @@ while adding_components do
     end
     if fs.exists(component) and fs.isDir(component) and tabletools.contains(cfg.remote_paths, component) then
         table.insert(update_folders, component)
-        print(component .. "added to queue.")
+        print(component .. " added to queue.")
     else
         print("Error: That component couldnt be found or that location isnt a component folder. Try again.")
     end

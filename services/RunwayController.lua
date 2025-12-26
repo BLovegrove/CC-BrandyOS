@@ -53,9 +53,7 @@ local function update_lights()
 end
 
 local function update_program()
-    local alwaiting_update = true
-
-    while alwaiting_update do
+    while true do
         local packet = comlink.await_command(true)
 
         if packet then
@@ -68,7 +66,6 @@ local function update_program()
                 run_value = 2
             end
 
-            alwaiting_update = false
             return
         end
 
