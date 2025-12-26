@@ -54,16 +54,19 @@ local function gitfolder(git_path, local_path, requested_files)
 end
 
 local function gitfolder_noupdate(git_path, local_path, requested_files)
-    local files_needed = nil
+    local files_needed = {}
+
     if requested_files then
         for index, filename in ipairs(requested_files) do
             if not fs.exists(fs.combine(local_path, filename)) then
-                files_needed[filename] = true
+                table.insert(files_needed, filename)
             end
         end
+    else
+        files_needed = nil
     end
 
-    if requested_files and not files_needed then
+    if requested_files and files_needed == {} then
         return
     end
 
