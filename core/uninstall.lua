@@ -12,6 +12,7 @@ if response == "yes" or response == "y" then
     fs.delete("/startup.lua")
     fs.delete("/update.lua")
     fs.delete("/uninstall.lua")
+    fs.delete("/.hostname")
 else
     print("Aborting...")
 end
