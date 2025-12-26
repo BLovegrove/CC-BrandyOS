@@ -88,7 +88,7 @@ if not fs.exists(".hostname") then
     print(
         "Failed to find hostname. a .hostname file with a single line containing the hostname fo this system must be present to connect to the network.")
 else
-    local hostname_file = fs.open("/.hostname")
+    local hostname_file = fs.open("/.hostname", "r")
     local hostname = hostname_file.readLine()
     rednet.host(cfg.protocols.request, hostname)
 end
