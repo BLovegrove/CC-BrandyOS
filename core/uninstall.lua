@@ -6,6 +6,7 @@ if response == "yes" or response == "y" then
     fs.delete("/services")
     fs.delete("/core")
     fs.delete("/lib")
+    fs.delete("/scripts")
     fs.delete("/.auth")
     fs.delete("/.github")
     fs.delete("/.services-enabled")
