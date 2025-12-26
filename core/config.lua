@@ -1,5 +1,5 @@
 local cfg = {
-    version = "0.0.1",
+    version = "0.1.0",
     version_notes = "",
     remote_paths = {
         base = "https://api.github.com/repos/blovegrove/cc-brandyos/contents/",
