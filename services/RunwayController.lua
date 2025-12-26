@@ -90,6 +90,7 @@ if not fs.exists(".hostname") then
 else
     local hostname_file = fs.open("/.hostname", "r")
     local hostname = hostname_file.readLine()
+    peripheral.find("modem", rednet.open)
     rednet.host(cfg.protocols.request, hostname)
 end
 
