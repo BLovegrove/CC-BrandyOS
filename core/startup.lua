@@ -1,6 +1,6 @@
 -- clear installer and screen
 term.clear()
-term.setCursorPos(0, 0)
+term.setCursorPos(1, 1)
 if fs.exists("installer.lua") then
     fs.delete("installer.lua")
 end

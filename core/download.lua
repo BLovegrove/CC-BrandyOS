@@ -63,7 +63,7 @@ local function gitfolder_noupdate(git_path, local_path, requested_files)
         end
     end
 
-    if not files_needed then
+    if requested_files and not files_needed then
         return
     end
 

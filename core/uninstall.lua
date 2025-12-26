@@ -15,7 +15,9 @@ if response == "yes" or response == "y" then
     fs.delete("/update.lua")
     fs.delete("/uninstall.lua")
     fs.delete("/.hostname")
+    print("System cleared. Goodbye.")
 else
     print("Aborting...")
 end
-print("System cleared. Goodbye.")
+sleep(2)
+shell.run("clear")
