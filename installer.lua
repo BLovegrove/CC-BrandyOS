@@ -26,13 +26,15 @@ print("Done!")
 
 local hostname_valid = false
 while hostname_valid == false do
-    print("Please enter the hostname for this system (can be changed in .hostname later)\n")
+    print(
+        "Please enter the hostname for this system (can be changed in .hostname later). This will also change the computers label.\n")
     write("host> ")
     local hostname = read()
     if hostname ~= "localhost" then
         local hostfile = fs.open("/.hostname", "w")
         hostfile.write(hostname)
         hostfile.close()
+        os.setComputerLabel(hostname)
         hostname_valid = true
     else
         print("\nError: localhost is a reserved hostname. Please pick something else.\n")
