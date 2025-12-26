@@ -46,7 +46,8 @@ local function sanitize(packet, command_info)
             context = valid_commands
         }
         comlink.respond(sender, help_packet)
-
+        local pretty = require("cc.pretty")
+        pretty.pretty_print(valid_commands)
         return
     end
 
