@@ -9,6 +9,7 @@ local function init()
     else
         local hostname_file = fs.open("/.hostname", "r")
         local hostname = hostname_file.readLine()
+        hostname_file.close()
         peripheral.find("modem", rednet.open)
         rednet.host(cfg.protocols.network, hostname)
     end
@@ -191,7 +192,7 @@ return {
     init = init,
     send_command = send_command,
     await_command = await_command,
-    reply = respond,
+    respond = respond,
     reply_unknown = reply_unknown,
     reply_success = reply_success,
     reply_forbidden = reply_forbidden,

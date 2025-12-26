@@ -5,7 +5,7 @@ local function read_key()
     elseif fs.exists(".auth") then
         auth_file = ".auth"
     else
-        error("No auth file found. Make sure a .auth file exists on the disk or your root directory.")
+        return nil
     end
 
     local file = fs.open(auth_file, "r")

@@ -40,7 +40,7 @@ local function sanitize(packet, valid_commands)
             message = "Listed below are the available commands for #" .. os.getComputerLabel(),
             context = valid_commands
         }
-        comlink.reply(sender, help_packet)
+        comlink.respond(sender, help_packet)
 
         return
     end

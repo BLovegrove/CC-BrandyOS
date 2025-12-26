@@ -56,7 +56,7 @@ local function update_program()
     local alwaiting_update = true
 
     while alwaiting_update do
-        local packet = comlink.await_command(cfg.protocols.network)
+        local packet = comlink.await_command(true)
 
         if packet then
             local command = command_handler.sanitize(packet, command_list)
