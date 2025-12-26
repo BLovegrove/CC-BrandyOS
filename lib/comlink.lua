@@ -111,7 +111,8 @@ local function send_command(recipient, command_string, auth_key, timeout)
         protocol = cfg.protocols.network
     }
 
-    request(recipient, packet, timeout)
+    local reply = request(recipient, packet, timeout)
+    return reply
 end
 
 local function respond(recipient, packet)

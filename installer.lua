@@ -53,7 +53,7 @@ else
         "Warning: Could not find .auth file on disk. Please write a custom one to your root directory containing a single line of characters representing your authorisation key that must be consistent between all nodes in your network.\n")
 end
 
-print("Checking for GitHub token file...")
+print("Checking for GitHub token file on disk...")
 if fs.exists("/disk/.github") then
     fs.copy("/disk/.github", "/.github")
     print("GitHub token file copied to root. Can be altered at /.github\n")

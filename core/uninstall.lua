@@ -10,6 +10,7 @@ if response == "yes" or response == "y" then
     fs.delete("/.github")
     fs.delete("/.services-enabled")
     fs.delete("/startup.lua")
+    fs.delete("/startup.disabled")
     fs.delete("/update.lua")
     fs.delete("/uninstall.lua")
     fs.delete("/.hostname")

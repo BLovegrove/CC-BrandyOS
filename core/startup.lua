@@ -54,8 +54,22 @@ while running do
             sleep(1)
         end
     else
-        print("No services found. Disabling startup script and exiting to shell...")
+        print("No services found. Disabling startup script.")
         fs.move("/startup.lua", "/startup.disabled")
+
+        print("Would you like to download script collection?")
+        write("(Y)es to proceed> ")
+        local download_scripts = string.lower(read())
+
+        if download_scripts == "yes" or download_scripts == "y" then
+            print("Downloading script files...")
+            download.gitfolder_noupdate(cfg.remote_paths.scripts, "/scripts")
+            print("Done.\n")
+        else
+            print("Skipping script download.\n")
+        end
+
+        print("Exiting to shell...")
     end
 
     running = false
