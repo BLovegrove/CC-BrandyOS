@@ -58,12 +58,14 @@ local function gitfolder_noupdate(git_path, local_path, requested_files)
 
     if requested_files then
         for index, filename in ipairs(requested_files) do
-            if not fs.exists(fs.combine(local_path, filename)) then
+            local file = fs.combine(local_path, filename)
+            print(file)
+            if not fs.exists(file) then
                 table.insert(files_needed, filename)
             end
         end
 
-        if files_needed == {} then
+        if #files_needed == 0 then
             return
         end
     else
