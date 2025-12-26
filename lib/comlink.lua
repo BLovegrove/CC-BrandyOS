@@ -64,7 +64,7 @@ local function decode_response(packet)
     end
     if context then
         for key, value in pairs(context) do
-            print(" - " .. tostring(key) .. ") " .. tostring(value))
+            print(tostring(key) .. ": " .. tostring(value))
         end
     end
 end
