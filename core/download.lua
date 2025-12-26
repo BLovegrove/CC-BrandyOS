@@ -62,12 +62,12 @@ local function gitfolder_noupdate(git_path, local_path, requested_files)
                 table.insert(files_needed, filename)
             end
         end
+
+        if files_needed == {} then
+            return
+        end
     else
         files_needed = nil
-    end
-
-    if requested_files and files_needed == {} then
-        return
     end
 
     gitfolder(git_path, local_path, files_needed)
