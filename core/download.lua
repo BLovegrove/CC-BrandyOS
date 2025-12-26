@@ -17,11 +17,13 @@ local function gitfolder(git_path, local_path, requested_files)
         fs.makeDir(local_path)
     end
 
-    local requests_formatted = {}
-    for index, item in ipairs(requested_files) do
-        requests_formatted[item] = true
+    if requested_files then
+        local requests_formatted = {}
+        for index, item in ipairs(requested_files) do
+            requests_formatted[item] = true
+        end
+        requested_files = requests_formatted
     end
-    requested_files = requests_formatted
 
     local git_connection = nil
 
