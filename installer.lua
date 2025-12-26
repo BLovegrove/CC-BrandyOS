@@ -41,7 +41,17 @@ while hostname_valid == false do
     end
 end
 
-print("\nSuccess! Booting into BrandyOS in 5 seconds...")
+print("Success. Checking for auth file on disk...")
+
+if fs.exists("/disk/.auth") then
+    fs.copy("/disk/.auth", "/.auth")
+    print("Authorisation file copied to root.")
+else
+    print(
+        "Warning: Could not find .auth file on disk. Please write a custom one to your root directory containing a single line of characters representing your authorisation key that must be consistent between all nodes in your network.")
+end
+
+print("\nBooting into BrandyOS in 5 seconds...")
 
 sleep(5)
 

@@ -4,12 +4,12 @@ if fs.exists("installer.lua") then
 end
 
 -- include config + core libraries
-local cfg = require("core.config")
+local cfg = require("/core.config")
 
 -- download raw http/s response from web
-local download = require("core.download")
-local parse = require("core.parse")
-local stringtools = require("core.string")
+local download = require("/core.download")
+local parse = require("/core.parse")
+local stringtools = require("/core.string")
 
 -- acquire library files
 download.gitfolder(cfg.remote_paths.lib, "/lib")

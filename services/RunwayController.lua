@@ -1,10 +1,10 @@
-local cfg = require("core.config")
-local download = require("core.download")
+local cfg = require("/core.config")
+local download = require("/core.download")
 
 download.gitfolder(cfg.remote_paths.lib, "/lib", { "comlink.lua", "crypt.lua" })
 
-local comlink = require("lib.comlink")
-local crypt = require("lib.crypt")
+local comlink = require("/lib.comlink")
+local crypt = require("/lib.crypt")
 
 local relay = peripheral.find("redstone_relay")
 local input_level = redstone.getAnalogInput("top") + 1
