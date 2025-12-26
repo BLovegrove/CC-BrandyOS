@@ -63,8 +63,8 @@ local function decode_response(packet)
         print(response)
     end
     if context then
-        for key, value in ipairs(context) do
-            print(tostring(key) .. tostring(value))
+        for key, value in pairs(context) do
+            print(" - " .. tostring(key) .. ") " .. tostring(value))
         end
     end
 end
@@ -86,7 +86,7 @@ local function request(recipient, packet, timeout)
 
     packet.sender = os.getComputerID()
 
-    rednet.send(recipient, packet, packet.protocl)
+    rednet.send(recipient, packet, packet.protocol)
 
     if not timeout then
         timeout = 5
