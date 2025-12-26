@@ -1,0 +1,18 @@
+print("Are you sure you want to wipe all files in BrandyOS manged folders?")
+write("(Y)es to proceed> ")
+local response = string.lower(read())
+if response == "yes" or response == "y" then
+    print("Wiping system...")
+    fs.delete("/services")
+    fs.delete("/core")
+    fs.delete("/lib")
+    fs.delete("/.auth")
+    fs.delete("/.github")
+    fs.delete("/.services-enabled")
+    fs.delete("/startup.lua")
+    fs.delete("/update.lua")
+    fs.delete("/uninstall.lua")
+else
+    print("Aborting...")
+end
+print("System cleared. Goodbye.")
