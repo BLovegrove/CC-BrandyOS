@@ -46,7 +46,7 @@ local function sanitize(packet, command_info)
 
     local authorized = authenticate(packet)
 
-    if not tabletools.contains(command_info, command[0]) then
+    if command_info[command[0]] then
         print("CMD_RCV: AUTH:" .. tostring(authorized) .. " | ERR <" .. pretty.pretty(command) .. ">")
         comlink.reply_unknown(sender, "Command not found.", valid_commands)
         return
