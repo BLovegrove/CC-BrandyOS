@@ -118,8 +118,8 @@ local function update_door()
         local authorized, command = command_handler.sanitize(packet, command_list)
 
         if authorized and command then
-            local arg = tonumber(command[1])
-            command = command[0]
+            local arg = tonumber(command[2])
+            command = command[1]
             local reply_sent = false
 
             if command == "door.open" and get_state() == 0 then
