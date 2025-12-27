@@ -154,6 +154,13 @@ local function update_door()
             elseif command == "door.togglemode" then
                 set_rotate(not get_rotate())
                 save_config()
+                local modestring
+                if get_rotate() then
+                    modestring = "Rotational."
+                else
+                    modestring = "Linear."
+                end
+                comlink.reply_info(packet.sender, "Door mode set to: ")
             end
             if not reply_sent then
                 comlink.reply_success(packet.sender, command_list[command].success)
