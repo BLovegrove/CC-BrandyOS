@@ -38,7 +38,8 @@ local function sanitize(packet, command_info)
     local sender = packet.sender
 
     if command == "help" then
-        comlink.reply_info(sender, "Listed below are the available commands for #" .. os.getComputerLabel(), valid_commands)
+        comlink.reply_info(sender, "Listed below are the available commands for #" .. os.getComputerLabel(),
+            valid_commands)
         return
     end
 
@@ -48,6 +49,7 @@ local function sanitize(packet, command_info)
         comlink.reply_unknown(sender, "Command not found.", valid_commands)
         return
     else
+        print("CMD_RCV: AUTH:" .. tostring(authorized) .. " | EXC <" .. command[0] .. "> (" .. command[1] .. ")")
         return authorized, command
     end
 end
