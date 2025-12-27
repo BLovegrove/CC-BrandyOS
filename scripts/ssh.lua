@@ -30,7 +30,7 @@ while main do
         print("\nConnected to: " .. hostname .. ".\n")
         local ssh = true
         while ssh do
-            print(username .. "@" .. hostname)
+            print("\n" .. username .. "@" .. hostname)
             write("> ")
             local command = read()
 

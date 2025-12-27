@@ -43,13 +43,13 @@ local function sanitize(packet, command_info)
 
     local authorized = authenticate(packet)
 
-    if command_info[command[1]] then
+    if tabletools.contains(command_info, command[1]) then
+        print("CMD_RCV: AUTH:" .. tostring(authorized) .. " | EXC <" .. pretty.pretty(command) .. ">")
+        return authorized, command
+    else
         print("CMD_RCV: AUTH:" .. tostring(authorized) .. " | ERR <" .. pretty.pretty(command) .. ">")
         comlink.reply_unknown(sender, "Command not found.", valid_commands)
         return
-    else
-        print("CMD_RCV: AUTH:" .. tostring(authorized) .. " | EXC <" .. pretty.pretty(command) .. ">")
-        return authorized, command
     end
 end
 
