@@ -118,7 +118,10 @@ local function update_door()
         local authorized, command = command_handler.sanitize(packet, command_list)
 
         if authorized and command then
-            local arg = tonumber(command[2])
+            local arg
+            if #command > 1 then
+                arg = tonumber(command[2])
+            end
             command = command[1]
             local reply_sent = false
 
@@ -129,16 +132,18 @@ local function update_door()
                 move_door(get_range() * -1)
                 set_state(0)
             elseif command == "door.getspeed" then
-                comlink.reply_info(packet.sender, "Speed: " .. get_speed() .. "/RPM")
+                local speedinfo = "Speed: " .. get_speed() .. "/RPM"
+                comlink.reply_info(packet.sender, speedinfo)
                 reply_sent = true
             elseif command == "door.getrange" then
                 local units
-                if door_config.rotate then
+                if get_rotate() then
                     units = "DEG"
                 else
                     units = "M"
                 end
-                comlink.reply_info(packet.sender, "Open distance: " .. get_range() .. "/" .. units)
+                local rangeinfo = "Open distance: " .. tostring(get_range()) .. "/" .. units
+                comlink.reply_info(packet.sender, rangeinfo)
                 reply_sent = true
             elseif command == "door.setspeed" then
                 set_speed(arg)
