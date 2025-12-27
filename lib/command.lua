@@ -9,15 +9,12 @@ local comlink = require("/lib.comlink")
 local crypt = require("/lib.crypt")
 
 local function authenticate(packet)
-    local sender = packet.sender
-    local protocol = packet.protocol
     local auth = packet.auth
 
     if auth ~= crypt.read_key() then
-        comlink.reply_forbidden(sender, protocol)
-        return
+        return false
     else
-        return packet
+        return true
     end
 end
 
@@ -38,7 +35,7 @@ local function sanitize(packet, command_info)
     local command = stringtools.split(packet.command, " ")
     local sender = packet.sender
 
-    if command == "help" then
+    if command[1] == "help" then
         comlink.reply_info(sender, "Listed below are the available commands for #" .. os.getComputerLabel(),
             valid_commands)
         return
@@ -46,7 +43,7 @@ local function sanitize(packet, command_info)
 
     local authorized = authenticate(packet)
 
-    if command_info[command[0]] then
+    if command_info[command[1]] then
         print("CMD_RCV: AUTH:" .. tostring(authorized) .. " | ERR <" .. pretty.pretty(command) .. ">")
         comlink.reply_unknown(sender, "Command not found.", valid_commands)
         return
