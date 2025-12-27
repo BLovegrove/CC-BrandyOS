@@ -59,9 +59,11 @@ local function save_config()
 end
 
 local function load_config()
-    local file = fs.open("/door.config", "w")
-    door_config = textutils.unserialise(file.readLine())
-    file.close()
+    if fs.exists("/dopor.config") then
+        local file = fs.open("/door.config", "w")
+        door_config = textutils.unserialise(file.readLine())
+        file.close()
+    end
 end
 
 local function get_state()
