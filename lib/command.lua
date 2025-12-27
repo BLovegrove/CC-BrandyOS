@@ -1,6 +1,7 @@
 local download = require("/core.download")
 local stringtools = require("/core.string")
 local tabletools = require("/core.table")
+local pretty = require("cc.pretty")
 local cfg = require("/core.config")
 
 download.gitfolder_noupdate(cfg.remote_paths.lib, "/lib", { "comlink.lua", "crypt.lua" })
@@ -46,11 +47,11 @@ local function sanitize(packet, command_info)
     local authorized = authenticate(packet)
 
     if not tabletools.contains(command_info, command[0]) then
-        print("CMD_RCV: AUTH:" .. tostring(authorized) .. " | ERR <" .. command[0] .. "> (" .. command[1] .. ")")
+        print("CMD_RCV: AUTH:" .. tostring(authorized) .. " | ERR <" .. pretty.pretty(command) .. ">")
         comlink.reply_unknown(sender, "Command not found.", valid_commands)
         return
     else
-        print("CMD_RCV: AUTH:" .. tostring(authorized) .. " | EXC <" .. command[0] .. "> (" .. command[1] .. ")")
+        print("CMD_RCV: AUTH:" .. tostring(authorized) .. " | EXC <" .. pretty.pretty(command) .. ">")
         return authorized, command
     end
 end
