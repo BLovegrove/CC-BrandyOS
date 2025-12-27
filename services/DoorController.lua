@@ -103,11 +103,11 @@ local function settings_init()
     set_speed(door_config.speed)
 end
 
-local function move_door(amount)
+local function move_door(amount, modifier)
     if door_config.rotate then
-        gearshift.rotate(amount)
+        gearshift.rotate(amount, modifier)
     else
-        gearshift.move(amount)
+        gearshift.move(amount, modifier)
     end
 end
 
@@ -129,7 +129,7 @@ local function update_door()
                 move_door(get_range())
                 set_state(get_range())
             elseif command == "door.close" and get_state() ~= 0 then
-                move_door(get_range() * -1)
+                move_door(get_range(), -1)
                 set_state(0)
             elseif command == "door.getspeed" then
                 local speedinfo = "Speed: " .. get_speed() .. "/RPM"
