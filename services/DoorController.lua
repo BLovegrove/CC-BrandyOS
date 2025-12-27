@@ -12,7 +12,7 @@ local speed_controller = peripheral.find("Create_RotationSpeedController")
 
 local door_config = {
     range = 0,
-    speed = 4,
+    speed = 8,
     rotate = false,
     state = 0
 }
@@ -59,7 +59,7 @@ local function save_config()
 end
 
 local function load_config()
-    if fs.exists("/dopor.config") then
+    if fs.exists("/door.config") then
         local file = fs.open("/door.config", "r")
         door_config = textutils.unserialise(file.readLine())
         file.close()
