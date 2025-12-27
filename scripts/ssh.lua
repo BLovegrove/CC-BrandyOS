@@ -40,7 +40,11 @@ while main do
             end
 
             local reply = comlink.send_command(endpoint, command, crypt.read_key())
-            comlink.decode_response(reply)
+            if reply then
+                comlink.decode_response(reply)
+            else
+                print("Error: Received no reply from peer.")
+            end
 
             ::continue::
         end
