@@ -58,7 +58,7 @@ end
 
 print("Checking for GitHub token file on disk...")
 if fs.exists("/disk/.github") then
-    if fs.exist("/.github") then
+    if fs.exists("/.github") then
         print("Github token found in root. Skipping copy.")
     else
         fs.copy("/disk/.github", "/.github")
