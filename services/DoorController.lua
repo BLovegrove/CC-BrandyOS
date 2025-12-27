@@ -60,7 +60,7 @@ end
 
 local function load_config()
     if fs.exists("/dopor.config") then
-        local file = fs.open("/door.config", "w")
+        local file = fs.open("/door.config", "r")
         door_config = textutils.unserialise(file.readLine())
         file.close()
     end
@@ -99,11 +99,15 @@ local function set_rotate(rotate_mode)
 end
 
 local function settings_init()
+    if not gearshift then
+        error("No gearshift found on local network.")
+    end
     load_config()
     set_speed(door_config.speed)
 end
 
 local function move_door(amount, modifier)
+    modifier = modifier or 1
     if door_config.rotate then
         gearshift.rotate(amount, modifier)
     else
@@ -160,7 +164,7 @@ local function update_door()
                 else
                     modestring = "Linear."
                 end
-                comlink.reply_info(packet.sender, "Door mode set to: ")
+                comlink.reply_info(packet.sender, "Door mode set to: " .. modestring)
             end
             if not reply_sent then
                 comlink.reply_success(packet.sender, command_list[command].success)
