@@ -2,7 +2,7 @@ local pretty = require("cc.pretty")
 local cfg = require("/core.config")
 
 -- opens rednet ports and establishes hostname
-local function init()
+local function init(protocol)
     if not fs.exists(".hostname") then
         print(
             "Failed to find hostname. a .hostname file with a single line containing the hostname fo this system must be present to connect to the network.")
@@ -11,7 +11,7 @@ local function init()
         local hostname = hostname_file.readLine()
         hostname_file.close()
         peripheral.find("modem", rednet.open)
-        rednet.host(cfg.protocols.network, hostname)
+        rednet.host(protocol or cfg.protocols.network, hostname)
     end
 end
 
@@ -125,18 +125,16 @@ local function respond(recipient, packet)
         error("Failed to provide recipient. Can't reply without destination.")
     end
 
-    if not packet.protocol then
-        error("Packet error: No protocol. This is necessary to stay on the right channel.")
-    end
+    packet.protocol = packet.protocol or cfg.protocols.network
 
     packet.sender = os.getComputerID()
 
     rednet.send(recipient, packet, packet.protocol)
 end
 
-local function reply_success(recipient, message, context)
+local function reply_success(recipient, message, context, protocol)
     local packet = {
-        protocol = cfg.protocols.network,
+        protocol = protocol,
         response_code = 200,
         message = message,
         context = context
@@ -145,20 +143,21 @@ local function reply_success(recipient, message, context)
     respond(recipient, packet)
 end
 
-local function reply_forbidden(recipient, message, context)
+local function reply_forbidden(recipient, message, context, protocol)
     local packet = {
         response_code = 403,
         message = message,
-        context = context
+        context = context,
+        protocol = protocol
     }
 
     respond(recipient, packet)
 end
 
-local function reply_unknown(recipient, message, context)
+local function reply_unknown(recipient, message, context, protocol)
     local packet = {
         response_code = 404,
-        protocol = cfg.protocols.network,
+        protocol = protocol,
         message = message,
         context = context
     }
@@ -166,8 +165,19 @@ local function reply_unknown(recipient, message, context)
     respond(recipient, packet)
 end
 
-local function await_command(needs_auth, timeout)
-    local from, reply = rednet.receive(cfg.protocols.network, timeout)
+local function reply_info(recipient, message, context, protocol)
+    local packet = {
+        response_code = 100,
+        protocol = protocol,
+        message = message,
+        context = context
+    }
+
+    respond(recipient, packet)
+end
+
+local function await_command(needs_auth, timeout, protocol)
+    local from, reply = rednet.receive(protocol or cfg.protocols.network, timeout)
 
     if not reply then
         return nil
@@ -197,5 +207,6 @@ return {
     reply_unknown = reply_unknown,
     reply_success = reply_success,
     reply_forbidden = reply_forbidden,
+    reply_info = reply_info,
     decode_response = decode_response
 }

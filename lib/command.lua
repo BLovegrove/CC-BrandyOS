@@ -1,4 +1,5 @@
 local download = require("/core.download")
+local stringtools = require("/core.string")
 local tabletools = require("/core.table")
 local cfg = require("/core.config")
 
@@ -33,35 +34,22 @@ local function sanitize(packet, command_info)
         valid_commands[command] = data.description
     end
 
-    local command = packet.command
+    local command = stringtools.split(packet.command, " ")
     local sender = packet.sender
-    local protocol = packet.protocol
 
     if command == "help" then
-        local help_packet = {
-            sender = os.getComputerID(),
-            protocol = protocol,
-            response_code = 100,
-            message = "Listed below are the available commands for #" .. os.getComputerLabel(),
-            context = valid_commands
-        }
-        comlink.respond(sender, help_packet)
+        comlink.reply_info(sender, "Listed below are the available commands for #" .. os.getComputerLabel(), valid_commands)
         return
     end
 
-    local authenticated = authenticate(packet)
-    if not authenticated then
-        return
-    end
+    local authorized = authenticate(packet)
 
-    if tabletools.contains(command_info, command) then
-        comlink.reply_success(sender, command_info[command].success)
-        print("RCV_CMD: AUTH ACCEPTED. EXC <" .. command .. ">")
-        return command
-    else
+    if not tabletools.contains(command_info, command[0]) then
         comlink.reply_unknown(sender, "Command not found.", valid_commands)
         return
+    else
+        return authorized, command
     end
 end
 
-return { sanitize = sanitize }
+return { sanitize = sanitize, authenticate = authenticate }
