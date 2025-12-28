@@ -10,12 +10,7 @@ local command_handler = require("/lib.command")
 local gearshift = peripheral.find("Create_SequencedGearshift")
 local speed_controller = peripheral.find("Create_RotationSpeedController")
 
-local door_config = {
-    range = 0,
-    speed = 8,
-    rotate = false,
-    state = 0
-}
+local door_config
 
 local command_list = {
     ["help"] = {
@@ -61,8 +56,15 @@ end
 local function load_config()
     if fs.exists("/door.config") then
         local file = fs.open("/door.config", "r")
-        door_config = textutils.unserialise(file.readLine())
+        door_config = textutils.unserialise(file.readAll())
         file.close()
+    else
+        door_config = {
+            range = 0,
+            speed = 8,
+            rotate = false,
+            state = 0
+        }
     end
 end
 
@@ -100,7 +102,10 @@ end
 
 local function settings_init()
     if not gearshift then
-        error("No gearshift found on local network.")
+        print("ERR: GEARSHIFT NULL. ATTACH AND REBOOT.")
+    end
+    if not speed_controller then
+        print("ERR: SPEEDCONTROL NULL. ATTACH AND REBOOT.")
     end
     load_config()
     set_speed(door_config.speed)
@@ -151,13 +156,10 @@ local function update_door()
                 reply_sent = true
             elseif command == "door.setspeed" then
                 set_speed(arg)
-                save_config()
             elseif command == "door.setrange" then
                 set_range(arg)
-                save_config()
             elseif command == "door.togglemode" then
                 set_rotate(not get_rotate())
-                save_config()
                 local modestring
                 if get_rotate() then
                     modestring = "Rotational."
@@ -169,6 +171,7 @@ local function update_door()
             if not reply_sent then
                 comlink.reply_success(packet.sender, command_list[command].success)
             end
+            save_config()
         else
             comlink.reply_forbidden(packet.sender)
         end
