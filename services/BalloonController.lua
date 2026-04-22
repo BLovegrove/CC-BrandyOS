@@ -2,8 +2,6 @@ local cfg = require("/core.config")
 local download = require("/core.download")
 local stringtools = require("/core.string")
 local pretty = require("cc.pretty")
-local sublevel = require("sublevel")
-local pid = require("pid")
 
 download.git_missing(cfg.remote_paths.lib, "/lib", { "comlink.lua", "command.lua" })
 local comlink = require("/lib.comlink")

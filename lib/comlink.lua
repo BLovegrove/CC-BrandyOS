@@ -187,7 +187,7 @@ local function reply_info(recipient, message, context, protocol)
     respond(recipient, packet)
 end
 
--- Wait for a command for a specified time, return nil if none is received and error of reply lacks command or sender ID. If auth is required, error if no auth is provided.
+-- Wait for a command for a specified time, return nil if none is received and error if reply lacks command or sender ID. If auth is required, error if no auth is provided.
 local function await_command(needs_auth, timeout, protocol)
     local from, reply = rednet.receive(protocol or cfg.protocols.network, timeout)
 
