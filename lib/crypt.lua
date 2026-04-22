@@ -1,3 +1,4 @@
+-- If local auth file exists, open it and return contents. If not, return nil
 local function read_key()
     local auth_file = nil
     if fs.exists("/disk/.auth") then

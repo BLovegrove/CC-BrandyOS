@@ -1,7 +1,7 @@
 local cfg = require("/core.config")
 local download = require("/core.download")
 
-download.gitfolder_noupdate(cfg.remote_paths.lib, "/lib", { "comlink.lua", "command.lua" })
+download.git_missing(cfg.remote_paths.lib, "/lib", { "comlink.lua", "command.lua" })
 local comlink = require("/lib.comlink")
 local command_handler = require("/lib.command")
 

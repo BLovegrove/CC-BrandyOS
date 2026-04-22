@@ -4,10 +4,11 @@ local tabletools = require("/core.table")
 local pretty = require("cc.pretty")
 local cfg = require("/core.config")
 
-download.gitfolder_noupdate(cfg.remote_paths.lib, "/lib", { "comlink.lua", "crypt.lua" })
+download.git_needed(cfg.remote_paths.lib, "/lib", { "comlink.lua", "crypt.lua" })
 local comlink = require("/lib.comlink")
 local crypt = require("/lib.crypt")
 
+-- Return true if auth key matches received, false if noit.
 local function authenticate(packet)
     local auth = packet.auth
 
@@ -18,13 +19,14 @@ local function authenticate(packet)
     end
 end
 
+-- Format command packet into usable info. Return useful help text if requested, set authorized status, print command info, and auto-reply if command noit found.
 local function sanitize(packet, command_info)
     if not packet then
         error("Missing packet. Can't sanitize command without input.")
     end
 
     if not command_info then
-        error("Missing command list. Valid list of commands needed to check inoput against.")
+        error("Missing command list. Valid list of commands needed to check input against.")
     end
 
     local valid_commands = {}

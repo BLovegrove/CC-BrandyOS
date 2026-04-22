@@ -26,7 +26,7 @@ end
 
 for i = 1, #update_folders do
     local list = fs.list(update_folders[i])
-    download.gitfolder(cfg.remote_paths[update_folders[i]], update_folders[i], list)
+    download.git(cfg.remote_paths[update_folders[i]], update_folders[i], list)
 end
 
 print("Update complete. Please reboot to see changes.")

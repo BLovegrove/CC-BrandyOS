@@ -1,7 +1,7 @@
 local cfg = require("/core.config")
 local download = require("/core.download")
 
-download.gitfolder_noupdate(cfg.remote_paths.lib, "/lib", { "comlink.lua", "crypt.lua" })
+download.git_missing(cfg.remote_paths.lib, "/lib", { "comlink.lua", "crypt.lua" })
 local comlink = require("/lib.comlink")
 local crypt = require("/lib.crypt")
 
@@ -15,6 +15,7 @@ print("Enter your session username: ")
 write("> ")
 local username = read()
 
+-- Remote into a system and manually run commands. Ideally used from a pocket terminal but works anywhere.
 print("\nEnter a hostname: ")
 while main do
     write("> ")

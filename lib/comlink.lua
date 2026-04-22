@@ -1,11 +1,11 @@
 local pretty = require("cc.pretty")
 local cfg = require("/core.config")
 
--- opens rednet ports and establishes hostname
+-- Opens rednet ports and establishes hostname
 local function init(protocol)
     if not fs.exists(".hostname") then
         print(
-            "Failed to find hostname. a .hostname file with a single line containing the hostname fo this system must be present to connect to the network.")
+            "Failed to find hostname. a .hostname file with a single line containing the hostname of this system must be present to connect to the network.")
     else
         local hostname_file = fs.open("/.hostname", "r")
         local hostname = hostname_file.readLine()
@@ -15,6 +15,11 @@ local function init(protocol)
     end
 end
 
+--[[
+Prints response data in human readable format.
+
+Packet must contain response_code. message can be provided for a custom message alongside your response code, and context can be provided as ["key"] = "value" pairs in a table and printed line-by-line.
+]]
 local function decode_response(packet)
     if not packet.response_code then
         error("No response code found in decoded packet. Check sender.")
@@ -69,6 +74,7 @@ local function decode_response(packet)
     end
 end
 
+-- Sends a request packet to a recipient PC using a specific protocol. Timeout optional, default 5 seconds.
 local function request(recipient, packet, timeout)
     -- guards
     if not recipient then
@@ -96,7 +102,7 @@ local function request(recipient, packet, timeout)
     return reply
 end
 
-
+-- Send an authenticated command (required) and wait a set time for a reply. Leave key oput for unauthenticated command. Timeout optional, default 5 seconds.
 local function send_command(recipient, command_string, auth_key, timeout)
     if not command_string then
         error("Failed to specify a command to send.")
@@ -116,6 +122,7 @@ local function send_command(recipient, command_string, auth_key, timeout)
     return reply
 end
 
+-- Respond to a received packet. Return recipient and packet containing response_code are required.
 local function respond(recipient, packet)
     if not packet then
         error("Failed to provide request packet. Cannot send request without data.")
@@ -132,6 +139,7 @@ local function respond(recipient, packet)
     rednet.send(recipient, packet, packet.protocol)
 end
 
+-- Shortcode to respond with success. All fields optional.
 local function reply_success(recipient, message, context, protocol)
     local packet = {
         protocol = protocol,
@@ -143,6 +151,7 @@ local function reply_success(recipient, message, context, protocol)
     respond(recipient, packet)
 end
 
+-- Shortcode to respond with access forbidden (no aauth by default). All fields optional.
 local function reply_forbidden(recipient, message, context, protocol)
     local packet = {
         response_code = 403,
@@ -154,6 +163,7 @@ local function reply_forbidden(recipient, message, context, protocol)
     respond(recipient, packet)
 end
 
+-- Shortcode to respond with unknown (command by default). All fields optional.
 local function reply_unknown(recipient, message, context, protocol)
     local packet = {
         response_code = 404,
@@ -165,6 +175,7 @@ local function reply_unknown(recipient, message, context, protocol)
     respond(recipient, packet)
 end
 
+-- Shortcode to respond with info requested. All fields optional.
 local function reply_info(recipient, message, context, protocol)
     local packet = {
         response_code = 100,
@@ -176,6 +187,7 @@ local function reply_info(recipient, message, context, protocol)
     respond(recipient, packet)
 end
 
+-- Wait for a command for a specified time, return nil if none is received and error of reply lacks command or sender ID. If auth is required, error if no auth is provided.
 local function await_command(needs_auth, timeout, protocol)
     local from, reply = rednet.receive(protocol or cfg.protocols.network, timeout)
 

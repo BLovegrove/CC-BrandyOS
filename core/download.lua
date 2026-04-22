@@ -12,7 +12,8 @@ local function web(url, localFile)
     end
 end
 
-local function gitfolder(git_path, local_path, requested_files)
+-- Downloads requested file(s) from given git path to given local folder
+local function git(git_path, local_path, requested_files)
     if not fs.exists(local_path) then
         fs.makeDir(local_path)
     end
@@ -61,7 +62,8 @@ local function gitfolder(git_path, local_path, requested_files)
     end
 end
 
-local function gitfolder_noupdate(git_path, local_path, requested_files)
+-- Only downloads missing files from the supplied list. Will not download and replace existing files.
+local function git_missing(git_path, local_path, requested_files)
     local files_needed = {}
 
     if requested_files then
@@ -79,7 +81,7 @@ local function gitfolder_noupdate(git_path, local_path, requested_files)
         files_needed = nil
     end
 
-    gitfolder(git_path, local_path, files_needed)
+    git(git_path, local_path, files_needed)
 end
 
-return { gitfolder = gitfolder, gitfolder_noupdate = gitfolder_noupdate, web = web }
+return { git = git, git_missing = git_missing, web = web }

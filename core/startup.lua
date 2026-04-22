@@ -46,7 +46,7 @@ while running do
         if not fs.exists("/services") then
             fs.makeDir("/services")
         end
-        download.gitfolder_noupdate(cfg.remote_paths.services, "/services", cfg.services_enabled)
+        download.git_missing(cfg.remote_paths.services, "/services", cfg.services_enabled)
         for index, service in ipairs(cfg.services_enabled) do
             local service_friendlyname = stringtools.remove_ext(service)
             shells[service_friendlyname] = shell.openTab(fs.combine("/services", service))
@@ -63,7 +63,7 @@ while running do
 
         if download_scripts == "yes" or download_scripts == "y" then
             print("Downloading script files...")
-            download.gitfolder_noupdate(cfg.remote_paths.scripts, "/scripts")
+            download.git_missing(cfg.remote_paths.scripts, "/scripts")
             print("Done.\n")
         else
             print("Skipping script download.\n")

@@ -17,7 +17,6 @@ fs.makeDir("core")
 webdl(REPO_ROOT .. "core/startup.lua", "startup.lua")
 webdl(REPO_ROOT .. "core/update.lua", "update.lua")
 webdl(REPO_ROOT .. "core/uninstall.lua", "uninstall.lua")
-webdl(REPO_ROOT .. "core/update.lua", "update.lua")
 webdl(REPO_ROOT .. "core/config.lua", "core/config.lua")
 webdl(REPO_ROOT .. "core/download.lua", "core/download.lua")
 webdl(REPO_ROOT .. "core/parse.lua", "core/parse.lua")
@@ -46,7 +45,7 @@ end
 print("\nSuccess. Checking for auth file on disk...")
 if fs.exists("/disk/.auth") then
     if fs.exists("/.auth") then
-        print("Auythorisation file found in root. Skipping copy.")
+        print("Authorisation file found in root. Skipping copy.")
     else
         fs.copy("/disk/.auth", "/.auth")
         print("Authorisation file copied to root. Can be altered at /.auth\n")
