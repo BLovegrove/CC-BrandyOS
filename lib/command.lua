@@ -4,7 +4,7 @@ local tabletools = require("/core.table")
 local pretty = require("cc.pretty")
 local cfg = require("/core.config")
 
-download.git_needed(cfg.remote_paths.lib, "/lib", { "comlink.lua", "crypt.lua" })
+download.git_missing(cfg.remote_paths.lib, "/lib", { "comlink.lua", "crypt.lua" })
 local comlink = require("/lib.comlink")
 local crypt = require("/lib.crypt")
 
