@@ -3,8 +3,8 @@
 local download = require("/core.download")
 local cfg = require("/core.config")
 
-download.git_missing(cfg.remote_paths.lib, "/models", { "pid.lua" })
-local pid = require("/models.pid")
+download.git_missing(cfg.remote_paths.model, "/model", { "pid.lua" })
+local pid = require("/model.pid")
 
 local class
 
