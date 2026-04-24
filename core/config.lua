@@ -1,10 +1,10 @@
 local cfg = {
-    version = "0.2.2",
+    version = "0.3.1",
     version_notes = "",
     remote_paths = {
         base = "https://api.github.com/repos/blovegrove/cc-brandyos/contents/",
         lib = "https://api.github.com/repos/blovegrove/cc-brandyos/contents/lib/",
-        models = "https://api.github.com/repos/blovegrove/cc-brandyos/contents/models/",
+        model = "https://api.github.com/repos/blovegrove/cc-brandyos/contents/model/",
         services = "https://api.github.com/repos/blovegrove/cc-brandyos/contents/services/",
         core = "https://api.github.com/repos/blovegrove/cc-brandyos/contents/core/",
         scripts = "https://api.github.com/repos/blovegrove/cc-brandyos/contents/scripts/"

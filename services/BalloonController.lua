@@ -1,17 +1,15 @@
 local cfg = require("/core.config")
 local download = require("/core.download")
-local stringtools = require("/core.string")
-local pretty = require("cc.pretty")
 
 download.git_missing(cfg.remote_paths.lib, "/lib", { "comlink.lua", "command.lua" })
-download.git_missing(cfg.remote_paths.lib, "/models", { "blimp.lua" })
+download.git_missing(cfg.remote_paths.model, "/model", { "blimp.lua" })
 local comlink = require("/lib.comlink")
 local command_handler = require("/lib.command")
-local blimp = require("/models.blimp")
+local blimp = require("/model.blimp")
 
 local relay = peripheral.find("redstone_relay")
 local altimeter = peripheral.find("altitude_sensor")
-local airspeed = peripheral.find("velocity_saensor")
+local airspeed = peripheral.find("velocity_sensor")
 local laser = peripheral.find("optical_sensor")
 
 local command_list = {
