@@ -4,6 +4,7 @@ local cfg = {
     remote_paths = {
         base = "https://api.github.com/repos/blovegrove/cc-brandyos/contents/",
         lib = "https://api.github.com/repos/blovegrove/cc-brandyos/contents/lib/",
+        models = "https://api.github.com/repos/blovegrove/cc-brandyos/contents/models/",
         services = "https://api.github.com/repos/blovegrove/cc-brandyos/contents/services/",
         core = "https://api.github.com/repos/blovegrove/cc-brandyos/contents/core/",
         scripts = "https://api.github.com/repos/blovegrove/cc-brandyos/contents/scripts/"
