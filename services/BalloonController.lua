@@ -89,29 +89,29 @@ local function control_balloon()
                 local reply_sent = false
 
                 if command == "system.start" then
-                    airship.start()
+                    airship:start()
                 elseif command == "throttle.increase" then
-                    airship.set_throttle(airship.throttle + 1)
+                    airship:set_throttle(airship.throttle + 1)
                 elseif command == "throttle.decrease" then
-                    airship.set_throttle(airship.throttle - 1)
+                    airship:set_throttle(airship.throttle - 1)
                 elseif command == "throttle.set" then
-                    airship.set_throttle(arg)
+                    airship:set_throttle(arg)
                 elseif command == "throttle.reset" then
-                    airship.set_throttle(0)
+                    airship:set_throttle(0)
                 elseif command == "rudder.port" then
-                    airship.set_rudder(-1)
+                    airship:set_rudder(-1)
                 elseif command == "rudder.starboard" then
-                    airship.set_rudder(1)
+                    airship:set_rudder(1)
                 elseif command == "rudder.reset" then
-                    airship.set_rudder(0)
+                    airship:set_rudder(0)
                 elseif command == "altitude.set" then
-                    airship.set_altitude_target(arg)
+                    airship:set_altitude_target(arg)
                 elseif command == "altitude.land" then
-                    airship.land()
+                    airship:land()
                 elseif command == "altitude.hold" then
-                    airship.hold()
+                    airship:hold()
                 elseif command == "system.shutdown" then
-                    airship.shutdown()
+                    airship:shutdown()
                 end
                 if not reply_sent then
                     comlink.reply_success(packet.sender, command_list[command].success)
@@ -126,6 +126,11 @@ end
 
 comlink.init()
 
+local function update_airship()
+    airship:update()
+    sleep(0.05)
+end
+
 while true do
-    parallel.waitForAll(airship.update, control_balloon)
+    parallel.waitForAll(update_airship, control_balloon)
 end
